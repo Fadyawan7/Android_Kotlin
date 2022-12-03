@@ -1,0 +1,37 @@
+  
+  
+  
+  implementation "com.android.volley:volley:1.2.1"
+  
+  
+  val queue = Volley.newRequestQueue(this)
+        val stringRequest = StringRequest(
+            Request.Method.GET, URL,
+            { response ->
+               dialog!!.dismiss()
+                try {
+                    val jsonArray = JSONArray(response)
+                    for (i in 0 until jsonArray.length()) {
+                        val jsonObject = jsonArray.getJSONObject(i)
+                        val team1 = jsonObject.getString("fastTeam")
+                        val team2 = jsonObject.getString("secondTeam")
+                        val match = jsonObject.getString("matchType")
+                        val time = jsonObject.getString("time")
+                        val img1 = jsonObject.getString("fastImage")
+                        val img2 = jsonObject.getString("secondImage")
+                        list.add((matchdatamodal(match.toString(),time.toString(),team1.toString(),team2,img1.toString(),img2.toString())))
+
+                        adapter = MatchAdapter(list, this)
+                        res.setAdapter(adapter)
+
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }) { error ->
+            hide2.setVisibility(View.VISIBLE);
+           // Toast.makeText(applicationContext, "" + error, Toast.LENGTH_SHORT).show()
+           dialog!!.dismiss()
+        }
+
+        queue.add(stringRequest)
