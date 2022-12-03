@@ -1,0 +1,60 @@
+ 
+ //create option menu
+ 
+ override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.opt_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+
+    }
+    
+ //click on item
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+          R.id.rate->{
+
+
+
+           }
+            R.id.more->{
+
+
+
+            }
+            R.id.notify->{
+
+
+
+            }
+            R.id.share->{
+
+
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    
+    
+    // XML :
+    
+    <?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="@string/reminder"
+        android:id="@+id/notify"
+        app:showAsAction="withText"
+        android:icon="@drawable/ic_notify"/>
+    <item android:title="@string/rate_us"
+        android:id="@+id/rate"
+        app:showAsAction="withText"
+        android:icon="@drawable/ic_rate"/>
+    <item android:title="@string/share_app"
+        android:id="@+id/share"
+        app:showAsAction="withText"
+        android:icon="@drawable/ic_share"/>
+    <item android:title="@string/more_apps"
+       android:id="@+id/more"
+        app:showAsAction="withText"
+        android:icon="@drawable/ic_more"/>
+</menu>
