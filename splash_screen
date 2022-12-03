@@ -1,0 +1,64 @@
+
+
+//this is xml of splash screen
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SplashActivity">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="225dp"
+        android:layout_height="225dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.39"
+        app:srcCompat="@drawable/indian_culture" />
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="32dp"
+        app:SpinKit_Color="@color/main"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+// this is backend code of splash
+
+   window.decorView.systemUiVisibility= View.SYSTEM_UI_FLAG_FULLSCREEN
+
+
+
+       Handler().postDelayed({
+           startActivity(Intent(this,MainActivity::class.java))
+           finish()
+
+       },3000)
+
+        val actionBar = supportActionBar
+        actionBar?.hide()
+
+
+
+
+// depedencies of splash screen
+
+ implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+ 
+ 
+   maven { url 'https://jitpack.io' }
