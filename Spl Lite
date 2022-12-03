@@ -1,0 +1,732 @@
+//step 1    main.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="Name"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:hint="Enter Name" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="Email ID"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/etEmailId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:hint="Enter Email ID"
+            android:inputType="textEmailAddress" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADD RECORD" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="All the inserted records."
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textstyle="bold" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvItemsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvNoRecordsAvailable"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No records available!!!"
+        android:textSize="18sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</LinearLayout>
+
+
+----------------------------------------------------------------------------------
+
+//step 2: Create a DatabaseHandler.kt class
+
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+ 
+//creating the database logic, extending the SQLiteOpenHelper base class
+class DatabaseHandler(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+ 
+    companion object {
+        private val DATABASE_VERSION = 1
+        private val DATABASE_NAME = "EmployeeDatabase"
+ 
+        private val TABLE_CONTACTS = "EmployeeTable"
+ 
+        private val KEY_ID = "_id"
+        private val KEY_NAME = "name"
+        private val KEY_EMAIL = "email"
+    }
+ 
+    override fun onCreate(db: SQLiteDatabase?) {
+        //creating table with fields
+        val CREATE_CONTACTS_TABLE = ("CREATE TABLE " + TABLE_CONTACTS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
+                + KEY_EMAIL + " TEXT" + ")")
+        db?.execSQL(CREATE_CONTACTS_TABLE)
+    }
+ 
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        db!!.execSQL("DROP TABLE IF EXISTS $TABLE_CONTACTS")
+        onCreate(db)
+    }
+}
+
+
+------------------------------------------------------------------
+
+
+
+//step 3: Create a Data Model class
+
+
+//creating a Data Model Class
+class EmpModelClass(val id: Int, val name: String, val email: String)
+
+
+---------------------------------------------------------------------
+
+
+step 4: Insert record in the database   DatabaseHandler.kt 
+
+
+    /**
+     * Function to insert data
+     */
+    fun addEmployee(emp: EmpModelClass): Long {
+        val db = this.writableDatabase
+ 
+        val contentValues = ContentValues()
+        contentValues.put(KEY_NAME, emp.name) // EmpModelClass Name
+        contentValues.put(KEY_EMAIL, emp.email) // EmpModelClass Email
+ 
+        // Inserting employee details using insert query.
+        val success = db.insert(TABLE_CONTACTS, null, contentValues)
+        //2nd argument is String containing nullColumnHack  
+ 
+        db.close() // Closing database connection
+        return success
+    }
+    
+    --------------------------------------------------------------------------------
+    
+    
+    
+step 5: Create a method to Add the record in the MainActivity.kt class:
+    
+    //Method for saving the employee records in database
+    private fun addRecord() {
+        val name = etName.text.toString()
+        val email = etEmailId.text.toString()
+        val databaseHandler: DatabaseHandler = DatabaseHandler(this)
+        if (!name.isEmpty() && !email.isEmpty()) {
+            val status =
+                databaseHandler.addEmployee(EmpModelClass(0, name, email))
+            if (status > -1) {
+                Toast.makeText(applicationContext, "Record saved", Toast.LENGTH_LONG).show()
+                etName.text.clear()
+                etEmailId.text.clear()
+            }
+        } else {
+            Toast.makeText(
+                applicationContext,
+                "Name or Email cannot be blank",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+    
+    -------------------------------------------------------------------------------------------
+    
+step 6: Assign the click event to the add record button   
+     // Click even of the add button.
+        btnAdd.setOnClickListener { view ->
+ 
+            addRecord()
+        }
+  ------------------------------------------------------------------------------------------
+        
+     
+step 7: Create a Custom Layout file for RecyclerView
+     items_row.xml
+    
+    
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llMain"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="10dp">
+ 
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        tools:text="Name" />
+ 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:textSize="18sp"
+        android:textstyle="bold"
+        tools:text=":" />
+ 
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        tools:text="Email" />
+ 
+    <ImageView
+        android:id="@+id/ivEdit"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="image"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="center"
+        android:src="@drawable/ic_action_edit" />
+ 
+    <ImageView
+        android:id="@+id/ivDelete"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="image"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="center"
+        android:src="@drawable/ic_action_delete" />
+</LinearLayout>
+
+--------------------------------------------------------------------------------------------
+
+
+step 8: Create an Item Adapter Class   ItemAdapter.kt
+
+
+class ItemAdapter(val context: Context, val items: ArrayList<EmpModelClass>) :
+    RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
+ 
+    /**
+     * Inflates the item views which is designed in the XML layout file
+     *
+     * create a new
+     * {@link ViewHolder} and initializes some private fields to be used by RecyclerView.
+     */
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            LayoutInflater.from(context).inflate(
+                R.layout.items_row,
+                parent,
+                false
+            )
+        )
+    }
+ 
+    /**
+     * Binds each item in the ArrayList to a view
+     *
+     * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent
+     * an item.
+     *
+     * This new ViewHolder should be constructed with a new View that can represent the items
+     * of the given type. You can either create a new View manually or inflate it from an XML
+     * layout file.
+     */
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+ 
+        val item = items.get(position)
+ 
+        holder.tvName.text = item.name
+        holder.tvEmail.text = item.email
+ 
+        // Updating the background color according to the odd/even positions in list.
+        if (position % 2 == 0) {
+            holder.llMain.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.colorLightGray
+                )
+            )
+        } else {
+            holder.llMain.setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite))
+        }
+    }
+ 
+    /**
+     * Gets the number of items in the list
+     */
+    override fun getItemCount(): Int {
+        return items.size
+    }
+ 
+    /**
+     * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
+     */
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        // Holds the TextView that will add each item to
+        val llMain = view.llMain
+        val tvName = view.tvName
+        val tvEmail = view.tvEmail
+        val ivEdit = view.ivEdit 
+        val ivDelete = view.ivDelete
+    }
+}
+
+----------------------------------------------------------------------------------------
+
+
+step 9: Add the colors such as colorLightGray and white in the colors.xml.
+
+<color name="colorWhite">#FFFFFF</color>
+<color name="colorLightGray">#EBEBEB</color>
+
+
+step 10 : Get the inserted records from the database in form of Array List  DatabaseHandler.kt
+
+
+    //Method to read the records from database in form of ArrayList
+    fun viewEmployee(): ArrayList<EmpModelClass> {
+
+        val empList: ArrayList<EmpModelClass> = ArrayList<EmpModelClass>()
+
+        // Query to select all the records from the table.
+        val selectQuery = "SELECT  * FROM $TABLE_CONTACTS"
+
+        val db = this.readableDatabase
+        // Cursor is used to read the record one by one. Add them to data model class.
+        var cursor: Cursor? = null
+
+        try {
+            cursor = db.rawQuery(selectQuery, null)
+
+        } catch (e: SQLiteException) {
+            db.execSQL(selectQuery)
+            return ArrayList()
+        }
+
+        var id: Int
+        var name: String
+        var email: String
+
+        if (cursor.moveToFirst()) {
+            do {
+                id = cursor.getInt(cursor.getColumnIndex(KEY_ID))
+                name = cursor.getString(cursor.getColumnIndex(KEY_NAME))
+                email = cursor.getString(cursor.getColumnIndex(KEY_EMAIL))
+
+                val emp = EmpModelClass(id = id, name = name, email = email)
+                empList.add(emp)
+
+            } while (cursor.moveToNext())
+        }
+        return empList
+    }
+    
+ ------------------------------------------------------------------------------------------------
+    
+   
+step 10; Create a method in MainActivity.kt to get the list of records using the above code:    MainActivity.kt
+    
+      /**
+     * Function is used to get the Items List which is added in the database table.
+     */
+    private fun getItemsList(): ArrayList<EmpModelClass> {
+        //creating the instance of DatabaseHandler class
+        val databaseHandler: DatabaseHandler = DatabaseHandler(this)
+        //calling the viewEmployee method of DatabaseHandler class to read the records
+        val empList: ArrayList<EmpModelClass> = databaseHandler.viewEmployee()
+ 
+        return empList
+    }
+    
+    
+    -------------------------------------------------------------------------------------
+    
+    
+step 11 : Attach the adapter to the RecyclerView    MainActivity.kt 
+    
+
+    /**
+     * Function is used to show the list on UI of inserted data.
+     */
+    private fun setupListofDataIntoRecyclerView() {
+ 
+        if (getItemsList().size > 0) {
+ 
+            rvItemsList.visibility = View.VISIBLE
+            tvNoRecordsAvailable.visibility = View.GONE
+ 
+            // Set the LayoutManager that this RecyclerView will use.
+            rvItemsList.layoutManager = LinearLayoutManager(this)
+            // Adapter class is initialized and list is passed in the param.
+            val itemAdapter = ItemAdapter(this, getItemsList())
+            // adapter instance is set to the recyclerview to inflate the items.
+            rvItemsList.adapter = itemAdapter
+        } else {
+ 
+            rvItemsList.visibility = View.GONE
+            tvNoRecordsAvailable.visibility = View.VISIBLE
+        }
+    }
+    
+    
+    -----------------------------------------------------------------------------------------
+    
+step 12 : Update the record     DatabaseHandler.kt
+     /**
+     * Function to update record
+     */
+    fun updateEmployee(emp: EmpModelClass): Int {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(KEY_NAME, emp.name) // EmpModelClass Name
+        contentValues.put(KEY_EMAIL, emp.email) // EmpModelClass Email
+ 
+        // Updating Row  
+        val success = db.update(TABLE_CONTACTS, contentValues, KEY_ID + "=" + emp.id, null)
+        //2nd argument is String containing nullColumnHack
+ 
+        // Closing database connection  
+        db.close() 
+        return success
+    }
+    
+    -----------------------------------------------------------------------------------
+    
+step 13 : Custom layout design for update dialog
+    Create a custom layout design for update dialog as dialog_update.xml:
+    
+    
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+ 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Record"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textstyle="bold" />
+ 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+ 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="Name"
+            android:textSize="18sp" />
+ 
+        <EditText
+            android:id="@+id/etUpdateName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:hint="Enter Name" />
+    </LinearLayout>
+ 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+ 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="Email ID"
+            android:textSize="18sp" />
+ 
+        <EditText
+            android:id="@+id/etUpdateEmailId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:inputType="textEmailAddress"
+            android:hint="Enter Email ID" />
+    </LinearLayout>
+ 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+ 
+        <TextView
+            android:id="@+id/tvUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="UPDATE"
+            android:textColor="@android:color/holo_red_dark"
+            android:textstyle="bold" />
+ 
+        <TextView
+            android:id="@+id/tvCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:inputType="textEmailAddress"
+            android:padding="10dp"
+            android:text="CANCEL"
+            android:textColor="@android:color/black"
+            android:textstyle="bold" />
+ 
+    </LinearLayout>
+</LinearLayout>
+
+
+---------------------------------------------------------------------------------------------------------------
+
+step 14: Add the below line of code to your styles.xml in the values folder:
+
+ <style name="Theme_Dialog" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+----------------------------------------------------------------------------------------------------------------
+
+
+
+ step 15: Now, create a private method in MainActivity.kt class as below to update the record.
+    
+    
+
+     /**
+     * Method is used to show the custom update dialog.
+     */
+    fun updateRecordDialog(empModelClass: EmpModelClass) {
+        val updateDialog = Dialog(this, R.style.Theme_Dialog)
+        updateDialog.setCancelable(false)
+        /*Set the screen content from a layout resource.
+         The resource will be inflated, adding all top-level views to the screen.*/
+        updateDialog.setContentView(R.layout.dialog_update)
+ 
+        updateDialog.etUpdateName.setText(empModelClass.name)
+        updateDialog.etUpdateEmailId.setText(empModelClass.email)
+ 
+        updateDialog.tvUpdate.setOnClickListener(View.OnClickListener {
+ 
+            val name = updateDialog.etUpdateName.text.toString()
+            val email = updateDialog.etUpdateEmailId.text.toString()
+ 
+            val databaseHandler: DatabaseHandler = DatabaseHandler(this)
+ 
+            if (!name.isEmpty() && !email.isEmpty()) {
+                val status =
+                    databaseHandler.updateEmployee(EmpModelClass(empModelClass.id, name, email))
+                if (status > -1) {
+                    Toast.makeText(applicationContext, "Record Updated.", Toast.LENGTH_LONG).show()
+ 
+                    setupListofDataIntoRecyclerView()
+ 
+                    updateDialog.dismiss() // Dialog will be dismissed
+                }
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "Name or Email cannot be blank",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
+        updateDialog.tvCancel.setOnClickListener(View.OnClickListener {
+            updateDialog.dismiss()
+        })
+        //Start the dialog and display it on screen.
+        updateDialog.show()
+    }
+    
+    
+ ------------------------------------------------------------------------------------------------------
+    
+step 16 : ItemAdapter.kt class
+     holder.ivEdit.setOnClickListener { view ->
+ 
+            if (context is MainActivity) {
+                context.updateRecordDialog(item)
+            }
+        }
+----------------------------------------------------------------------------------------------
+ step 17:  Delete the record   DatabaseHandler.kt 
+     
+      /**
+     * Function to delete record
+     */
+    fun deleteEmployee(emp: EmpModelClass): Int {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(KEY_ID, emp.id) // EmpModelClass id
+        // Deleting Row  
+        val success = db.delete(TABLE_CONTACTS, KEY_ID + "=" + emp.id, null)
+        //2nd argument is String containing nullColumnHack  
+ 
+        // Closing database connection 
+        db.close()  
+        return success
+    }
+    
+-----------------------------------------------------------------------------------------------------------
+    step 18 : Now, create a private method in MainActivity.kt class as below to delete the record:
+    
+   
+
+
+    /**
+     * Method is used to show the delete alert dialog.
+     */
+    fun deleteRecordAlertDialog(empModelClass: EmpModelClass) {
+        val builder = AlertDialog.Builder(this)
+        //set title for alert dialog
+        builder.setTitle("Delete Record")
+        //set message for alert dialog
+        builder.setMessage("Are you sure you wants to delete ${empModelClass.name}.")
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+ 
+        //performing positive action
+        builder.setPositiveButton("Yes") { dialogInterface, which ->
+ 
+            //creating the instance of DatabaseHandler class
+            val databaseHandler: DatabaseHandler = DatabaseHandler(this)
+            //calling the deleteEmployee method of DatabaseHandler class to delete record
+            val status = databaseHandler.deleteEmployee(EmpModelClass(empModelClass.id, "", ""))
+            if (status > -1) {
+                Toast.makeText(
+                    applicationContext,
+                    "Record deleted successfully.",
+                    Toast.LENGTH_LONG
+                ).show()
+ 
+                setupListofDataIntoRecyclerView()
+            }
+ 
+            dialogInterface.dismiss() // Dialog will be dismissed
+        }
+        //performing negative action
+        builder.setNegativeButton("No") { dialogInterface, which ->
+            dialogInterface.dismiss() // Dialog will be dismissed
+        }
+        // Create the AlertDialog
+        val alertDialog: AlertDialog = builder.create()
+        // Set other dialog properties
+        alertDialog.setCancelable(false) // Will not allow user to cancel after clicking on remaining screen area.
+        alertDialog.show()  // show the dialog to UI
+    }
+    
+ ------------------------------------------------------------------------------------------------------------------   
+    step 19: ItemAdapter.kt 
+      holder.ivDelete.setOnClickListener { view ->
+ 
+            if (context is MainActivity) {
+                context.deleteRecordAlertDialog(item)
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+  =======================================================================================================================================
+        
+        
+        
+        source : https://tutorials.eu/android-sqlite-database-in-depth-guide/
+
+    
+
+
+
