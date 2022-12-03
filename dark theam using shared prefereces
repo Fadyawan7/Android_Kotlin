@@ -1,0 +1,46 @@
+<style name="AppTheme" parent="Theme.AppCompat.DayNight">
+
+
+
+
+
+private fun checkTheme() {
+        when (MyPreferences(this).darkMode) {
+            0 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                delegate.applyDayNight()
+            }
+            1 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                delegate.applyDayNight()
+            }
+            2 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                delegate.applyDayNight()
+            }
+        }
+    }
+
+
+
+ try{
+            val sharedPreferences: SharedPreferences = this.getSharedPreferences("sharedPrefFile",
+                Context.MODE_PRIVATE)
+            val getpos = intent.getStringExtra("pos").toString()
+            val position =getpos.toInt()
+
+            val editor:SharedPreferences.Editor =  sharedPreferences.edit()
+            editor.putInt("id_key",position)
+            editor.apply()
+            val sharedIdValue = sharedPreferences.getInt("id_key",0)
+            id_pos =sharedIdValue.toInt()
+
+
+
+
+        }catch (e:Exception){
+            val sharedPreferences: SharedPreferences = this.getSharedPreferences("sharedPrefFile",
+                Context.MODE_PRIVATE)
+
+            val sharedIdValue = sharedPreferences.getInt("id_key",0)
+             id_pos =sharedIdValue.toInt()}
