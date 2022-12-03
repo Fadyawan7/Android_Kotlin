@@ -1,0 +1,18 @@
+
+//add dependency:
+implementation'com.github.hotchemi:android-rate:1.0.1'
+
+//implement this code in .kt file:
+
+rateme()
+
+    private fun rateme() {
+        AppRate.with(this)
+            .setInstallDays(1)
+            .setLaunchTimes(4)
+            .setRemindInterval(1)
+            .monitor()
+        AppRate.showRateDialogIfMeetsConditions(this)
+        AppRate.with(this).clearAgreeShowDialog()
+        AppRate.with(this).shouldShowRateDialog()
+    }
