@@ -1,0 +1,11 @@
+ val actionbar=supportActionBar
+        actionbar!!. title="TLP Stickers & Banners"
+        actionbar!!.setDisplayHomeAsUpEnabled(true)
+
+
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
