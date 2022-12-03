@@ -1,0 +1,102 @@
+package com.example.drive_test.AdapterClass
+
+
+
+class HighwaycodeAdapter(list1: List<highway_code>, var activity1: Activity) :
+    RecyclerView.Adapter<HighwaycodeAdapter.ViewHolderClass>() {
+    private var list1: List<highway_code>
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderClass {
+        val view: View =
+
+            LayoutInflater.from(parent.context).inflate(R.layout.code_item_simpal, parent, false)
+        return ViewHolderClass(view)
+    }
+    override fun onBindViewHolder(
+        holder: ViewHolderClass,
+        @SuppressLint("RecyclerView") position: Int
+    ) {
+        val modelClass: highway_code = list1[position]
+
+        holder.image.setImageResource(modelClass.image)
+        holder.text.text = modelClass.text
+
+
+        holder.card.setOnClickListener {
+            val m = list1[position]
+
+
+            val pos = position.toString()
+
+            val i = Intent(activity1, PdfActivity::class.java)
+            i.putExtra("pdf", m.pdf.toString())
+
+            activity1.startActivity(i)
+        }
+
+
+    }
+    override fun getItemCount(): Int {
+        return list1.size
+    }
+    class ViewHolderClass(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var image: ImageView
+        var text: TextView
+        var card: LinearLayout
+
+        init {
+
+            image = itemView.findViewById(R.id.codeitem_img)
+            text = itemView.findViewById(R.id.codeitem_text)
+            card = itemView.findViewById(R.id.card)
+
+        }
+    }
+
+    init {
+        this.list1 = list1
+    }
+}
+
+
+package com.example.drive_test
+
+
+
+
+class HighwaycodesActivity : AppCompatActivity() {
+    var list= ArrayList<highway_code>()
+    lateinit var adapter : HighwaycodeAdapter
+    lateinit var res:RecyclerView
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_codes)
+        list = setdata.getdata()
+        title = "Highway Codes "
+        res = findViewById(R.id.res)
+
+
+
+
+        val linearLayoutManager =
+            LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+        res.layoutManager = linearLayoutManager
+
+
+
+
+
+
+
+//        list.add((highway_code(R.drawable.code_item,"Introduction")))
+
+
+
+        adapter = HighwaycodeAdapter(list, this)
+        res.setAdapter(adapter)
+
+
+
+
+
+    }
+}
