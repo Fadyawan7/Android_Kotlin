@@ -1,0 +1,45 @@
+1- menu file:
+ <item android:id="@+id/search"
+        android:title="Search  "
+        android:icon="@drawable/search_ic"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+        
+        
+       
+2-on create: 
+ override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.search_option, menu)
+     val menuitem = menu.findItem(R.id.search)
+        val searchView:SearchView = menuitem.actionView as SearchView
+            searchView.queryHint = "Type here to search"
+
+                searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return false
+                    }
+
+                    @SuppressLint("NotifyDataSetChanged")
+                    override fun onQueryTextChange(newText: String?): Boolean {
+
+
+                        templist.clear()
+                        val searcktext = newText!!.toLowerCase(Locale.getDefault())
+                        if (searcktext.isNotEmpty()){
+                            list.forEach{
+
+                                if(it.eng_name.toLowerCase(Locale.getDefault()).contains(searcktext)){
+                                    templist.add(it)
+                                }
+                            }
+                            resView2.adapter!!.notifyDataSetChanged()
+
+                        }else{
+                            templist.clear()
+                            templist.addAll(list)
+                            resView2.adapter!!.notifyDataSetChanged()
+
+                        }
+                        return false }
+                        
+3- add tem in adapter 
