@@ -1,0 +1,2 @@
+splash_img.translationX = -15000f
+        splash_img.animate().translationX(0f).duration=2000
