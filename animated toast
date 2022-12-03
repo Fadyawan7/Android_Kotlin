@@ -1,0 +1,91 @@
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+
+
+	dependencies {
+	        implementation 'com.github.Spikeysanju:MotionToast:1.4' 
+	}
+
+
+
+
+        1. TOAST_SUCCESS
+        2. TOAST_ERROR
+        3. TOAST_WARNING
+        4. TOAST_INFO
+        5. TOAST_DELETE
+        
+        
+        Success Toast
+        
+        MotionToast.createToast(requireActivity(),
+                "Hurray success 😍",
+                "Upload Completed successfully!",
+                MotionToastStyle.SUCCESS,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.LONG_DURATION,
+                ResourcesCompat.getFont(requireContext(), www.sanju.motiontoast.R.font.helveticabold))
+        
+                
+                
+                
+                Error Toast
+
+            MotionToast.createToast(requireActivity(),
+                "Failed ☹️",
+                "Profile Update Failed!",
+                MotionToastStyle.ERROR,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.LONG_DURATION,
+                ResourcesCompat.getFont(requireContext(), www.sanju.motiontoast.R.font.helveticabold))
+                    
+                    
+                    
+                    
+                    Warning Toast
+ MotionToast.createToast(requireActivity(),"Please fill all the details!",
+                "Warninos",
+                MotionToastStyle.WARNING,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.LONG_DURATION,
+                ResourcesCompat.getFont(requireContext(), www.sanju.motiontoast.R.font.helvetica_regular))
+
+
+
+
+
+
+
+Info Toast
+      MotionToast.createToast(requireActivity(),"This is information toast!",
+            "Try again",
+            MotionToastStyle.INFO,
+            MotionToast.GRAVITY_BOTTOM,
+            MotionToast.LONG_DURATION,
+            ResourcesCompat.getFont(requireContext(), www.sanju.motiontoast.R.font.helvetica_regular))
+
+
+
+
+
+
+Delete Toast
+      
+            MotionToast.createToast(requireActivity(),"Delete all history!",
+                "You delete history",
+                MotionToastStyle.DELETE,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.LONG_DURATION,
+                ResourcesCompat.getFont(requireContext(), www.sanju.motiontoast.R.font.helvetica_regular))
+                    
+                    
+                    
+                    
+                    https://github.com/Spikeysanju/MotionToast#error-toast
+                    
+                    
+                
