@@ -1,0 +1,72 @@
+
+
+
+ <io.ak1.BubbleTabBar
+        android:id="@+id/nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="7dp"
+        app:bubbletab_icon_padding="5sp"
+        app:bubbletab_icon_size="25dp"
+        app:bubbletab_menuResource="@menu/bottom_nav"
+        app:bubbletab_tab_corner_radius="25dp"
+        app:bubbletab_title_size="16sp"
+        app:bubbletab_vertical_padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+        
+        
+        
+           implementation  'io.ak1:bubbletabbar:1.0.8'
+           
+           
+               replaceFragmnet(Boys_Fragment())
+        nav_bar.addBubbleListener() { item ->
+            when (item) {
+                R.id.boys_btn ->{
+                    replaceFragmnet(Boys_Fragment())
+                }
+
+                R.id.girls_btn ->{
+                    replaceFragmnet(Girls_Fragment())
+                }
+                R.id.setting_btn ->{
+                    replaceFragmnet(Setting_Fragment())
+                }
+
+                else ->{
+
+                }
+
+            }
+        }
+
+
+    }
+    private fun replaceFragmnet(fragment: Fragment) {
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout,fragment)
+        fragmentTransaction.commit()
+
+    }
+    
+    
+    
+    
+    
+    
+    private var pressedTime: Long = 0
+     override fun onBackPressed() {
+
+            if (pressedTime + 2000 > System.currentTimeMillis()) {
+                super.onBackPressed()
+                finish()
+            } else {
+                Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+            }
+            pressedTime = System.currentTimeMillis() }
+
+}
