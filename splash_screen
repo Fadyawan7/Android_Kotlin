@@ -62,3 +62,23 @@
  
  
    maven { url 'https://jitpack.io' }
+   
+   
+   RotatingPlane	RotatingPlane
+DoubleBounce	DoubleBounce
+Wave	Wave
+WanderingCubes	WanderingCubes
+Pulse	Pulse
+ChasingDots	ChasingDots
+ThreeBounce	ThreeBounce
+Circle	Circle
+CubeGrid	CubeGrid
+FadingCircle	FadingCircle
+FoldingCube	FoldingCube
+RotatingCircle	
+
+@style/SpinKitView
+@style/SpinKitView.Circle
+@style/SpinKitView.Large
+@style/SpinKitView.Small
+@style/SpinKitView.Small.DoubleBounce  
