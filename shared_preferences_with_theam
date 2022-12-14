@@ -1,0 +1,24 @@
+        sharedPreferences =this.getSharedPreferences("MODE",Context.MODE_PRIVATE)
+        val editor:SharedPreferences.Editor = sharedPreferences.edit()
+
+        val nightMode=sharedPreferences.getBoolean("night_mode",false)
+
+        if (nightMode){
+            sw.isChecked =true
+            AppCompatDelegate.setDefaultNightMode(dark)
+        }
+
+        sw.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(sw.isChecked){
+                AppCompatDelegate.setDefaultNightMode(dark)
+               
+                editor.putBoolean("night_mode",true)
+
+            }else{
+                AppCompatDelegate.setDefaultNightMode(light)
+                editor.putBoolean("night_mode",false)
+
+            }
+            editor.apply()
+        }
+
