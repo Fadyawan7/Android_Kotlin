@@ -1,0 +1,56 @@
+//step 1:
+make  modcal class
+
+
+ // retrofit
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+// GSON
+
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+// coroutine
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+    
+    
+    
+    
+    make interface end point 
+    
+    interface QuotesApi {
+    @GET("secondcardlist/1")
+    suspend fun getQuotes() : Response<aaaa>
+}
+
+
+make object class
+
+class RetrofitHelper {
+    val baseUrl = "https://indiancultureadminpanel.ahmadsaeed.net/api/"
+
+    fun getInstance(): Retrofit {
+        return Retrofit.Builder().baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            // we need to add converter factory to
+            // convert JSON object to Java object
+            .build()
+    }
+}
+
+
+
+//call your request 
+
+                 //object  class  //object fun          //interface
+val quotesApi = RetrofitHelper().getInstance().create(QuotesApi::class.java)
+        // launching a new coroutine
+        GlobalScope.launch {
+            val result = quotesApi.getQuotes()
+            if (result != null)
+            // Checking the results
+                Log.d("T", result.body().toString())
+        }
