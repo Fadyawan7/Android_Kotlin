@@ -1,0 +1,29 @@
+step 1 : add dependency
+ implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+ 
+ 
+ step 2 : xml
+ 
+ <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pullToRefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    
+  your xml
+  
+        
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+step 3: .kt class
+val pullToRefresh = findViewById<SwipeRefreshLayout>(R.id.pullToRefresh)
+        pullToRefresh.setOnRefreshListener {
+            refreshData() // your code
+            pullToRefresh.isRefreshing = false
+        }
+        
+        
+     private fun refreshData() {
+        println("hi")
+    }
