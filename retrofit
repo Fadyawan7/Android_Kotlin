@@ -54,3 +54,46 @@ val quotesApi = RetrofitHelper().getInstance().create(QuotesApi::class.java)
             // Checking the results
                 Log.d("T", result.body().toString())
         }
+        
+        or 
+        
+         val quotesApi = RetrofitHelper().getInstance().create(QuotesApi::class.java)
+        // launching a new coroutine
+        GlobalScope.launch {
+            val result = quotesApi.getQuotes()
+            withContext(Dispatchers.Main) {
+                if (result != null)
+                // Checking the results
+                    prg.visibility = View.GONE
+                Log.d("T", result.body().toString())
+            }
+
+
+        }
+        
+        
+        
+        
+          val pullToRefresh = findViewById<SwipeRefreshLayout>(R.id.pullToRefresh)
+        pullToRefresh.setOnRefreshListener {
+            refreshData() // your code
+            pullToRefresh.isRefreshing = false
+        }
+
+    }
+
+    private fun refreshData() {
+        val quotesApi = RetrofitHelper().getInstance().create(QuotesApi::class.java)
+        // launching a new coroutine
+        GlobalScope.launch {
+            val result = quotesApi.getQuotes()
+            withContext(Dispatchers.Main) {
+                if (result != null)
+                // Checking the results
+                    prg.visibility = View.GONE
+                Log.d("T", result.body().toString())
+            }
+
+
+        }
+    }
