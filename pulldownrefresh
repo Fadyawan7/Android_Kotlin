@@ -25,5 +25,17 @@ val pullToRefresh = findViewById<SwipeRefreshLayout>(R.id.pullToRefresh)
         
         
      private fun refreshData() {
-        println("hi")
+        val quotesApi = RetrofitHelper().getInstance().create(QuotesApi::class.java)
+        // launching a new coroutine
+        GlobalScope.launch {
+            val result = quotesApi.getQuotes()
+            withContext(Dispatchers.Main) {
+                if (result != null)
+                // Checking the results
+                    prg.visibility = View.GONE
+                Log.d("T", result.body().toString())
+            }
+
+
+        }
     }
