@@ -100,3 +100,11 @@ class HighwaycodesActivity : AppCompatActivity() {
 
     }
 }
+
+
+
+--------------------------------------
+info
+smootly
+mRecyclerview.setNestedScrollingEnabled(false);
+
